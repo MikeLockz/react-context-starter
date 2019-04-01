@@ -1,5 +1,5 @@
 import React from "react";
-
+import { fetchEmails } from "./api";
 const { Provider, Consumer } = React.createContext();
 // Context.Consumer, Context.Provider
 
