@@ -2,7 +2,8 @@ import React from "react";
 import { fetchEmails, fetchLatestEmails } from "./api";
 import { withNotifier } from "./NotificationContext";
 
-const { Provider, Consumer } = React.createContext();
+let EmailContext;
+const { Provider, Consumer } = (EmailContext = React.createContext());
 
 class EmailProvider extends React.Component {
   state = {
@@ -15,9 +16,11 @@ class EmailProvider extends React.Component {
   componentDidMount() {
     this.setState({ loading: true, error: null });
     fetchEmails()
-      .then(emails => this.setState({ loading: false, emails }))
+      .then(emails => {
+        this.setState({ loading: false, emails });
+        this.refreshInterval = setInterval(this.refresh, 5000);
+      })
       .catch(error => this.setState({ loading: false, error }));
-    this.refreshInterval = setInterval(this.refresh, 5000);
   }
 
   componentWillUnmount() {
@@ -58,4 +61,4 @@ class EmailProvider extends React.Component {
 
 const Wrapped = withNotifier(EmailProvider);
 
-export { Wrapped as EmailProvider, Consumer as EmailConsumer };
+export { Wrapped as EmailProvider, Consumer as EmailConsumer, EmailContext };
